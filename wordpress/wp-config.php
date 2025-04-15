@@ -20,13 +20,13 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'coffeedb' );
+define( 'DB_NAME', 'proxydb1' );
 
 /** Database username */
-define( 'DB_USER', 'coffeedbuser' );
+define( 'DB_USER', 'proxydb1' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'Coffeedbuser123' );
+define( 'DB_PASSWORD', 'Proxydb1' );
 
 /** Database hostname */
 define( 'DB_HOST', 'localhost' );
