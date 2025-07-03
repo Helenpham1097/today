@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "HelenPhammmmmmmmmmmmmmmmm"
+echo "TRANG"
 
 #fooinstall some-package
 
