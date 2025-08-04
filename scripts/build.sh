@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "HelenPhammmmmmmmmmmmmmmmm"
+echo "HelenPham"
 
 fooinstall some-package
 
