@@ -20,13 +20,13 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'gitrestoringdb' );
+define( 'DB_NAME', 'backup3db' );
 
 /** Database username */
-define( 'DB_USER', 'gitrestoringdbuser' );
+define( 'DB_USER', 'backup3dbuser' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'Gitrestoringdbuser123' );
+define( 'DB_PASSWORD', 'Backup3dbuser' );
 
 /** Database hostname */
 define( 'DB_HOST', 'localhost' );
