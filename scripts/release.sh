@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -euo pipefail
+set -euo pipefail
 
 # Echo a message
 echo "Starting Node.js installation..."
