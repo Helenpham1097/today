@@ -2,7 +2,7 @@
 
 echo "HelenPhammmmmmmmmmmmmmmmm"
 
-#fooinstall some-package
+fooinstall some-package
 
 echo "Helen"
 
