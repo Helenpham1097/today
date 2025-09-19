@@ -10,4 +10,4 @@ set -ex
 #npm run build:prod
 #php artisan key:generate
 
-echo "Build Script Finished Successfully"
+echo "Build Script Finished Successfullyyyyyyyyyyyyyyy"
