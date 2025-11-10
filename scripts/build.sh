@@ -1,13 +1,42 @@
 #!/bin/bash
-# Build for webslice.com
-echo "Starting Build Script"
 
-# Print command output for each command and exit immediately if any command fails (https://man7.org/linux/man-pages/man1/set.1p.html)
-set -ex
+# Exit on error
+set -e
 
-#COMPOSER_PROCESS_TIMEOUT=2000 composer install --no-interaction -vvv --no-dev --prefer-dist --optimize-autoloader
-#npm ci --cache .npm --prefer-offline
-#npm run build:prod
-#php artisan key:generate
+echo "Starting WordPress build..."
 
-echo "Build Script Finished Successfullyyyyyyyyyyyyyyy"
+# Install dependencies
+echo "Installing npm dependencies..."
+npm install
+
+# Lint code
+echo "Linting code..."
+npm run lint || true
+
+# Build CSS
+echo "Building CSS..."
+npm run build:css
+
+# Build JavaScript
+echo "Building JavaScript..."
+npm run build:js
+
+# Install Composer dependencies (for plugins/themes)
+if [ -f "composer.json" ]; then
+    echo "Installing Composer dependencies..."
+    composer install --no-dev --optimize-autoloader
+fi
+
+# Optimize images
+if command -v optipng &> /dev/null; then
+    echo "Optimizing PNG images..."
+    find ./assets/images -name "*.png" -exec optipng -o2 {} \;
+fi
+
+# Clean up development files
+echo "Cleaning up..."
+rm -rf node_modules/.cache
+rm -rf src/
+
+echo "Build completed successfully!"
+
