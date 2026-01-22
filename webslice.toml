@@ -1,0 +1,4 @@
+[deploy]
+[deploy.commands]
+build = "build.sh"
+release = "release.sh"
