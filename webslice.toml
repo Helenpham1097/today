@@ -1,4 +1,4 @@
 [deploy]
 [deploy.commands]
-build = "scripts/uild.sh"
+build = "scripts/build.sh"
 release = "release.sh"
