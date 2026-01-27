@@ -17,8 +17,9 @@
  *
  * @package WordPress
  */
-umask(000);
 
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define( 'DB_NAME', getenv('DB_NAME'));
