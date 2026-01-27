@@ -1,4 +1,4 @@
 [deploy]
 [deploy.commands]
 build = "scripts/build.sh"
-release = "release.sh"
+release = "scripts/elease.sh"
