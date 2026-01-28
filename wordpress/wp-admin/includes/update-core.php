@@ -1187,33 +1187,72 @@ function update_core( $from, $to ) {
 	}
 
 	// If we're using the direct method, we can predict write failures that are due to permissions.
-	if ( $check_is_writable && 'direct' === $wp_filesystem->method ) {
-		$files_writable = array_filter( $check_is_writable, array( $wp_filesystem, 'is_writable' ) );
+//	if ( $check_is_writable && 'direct' === $wp_filesystem->method ) {
+//		$files_writable = array_filter( $check_is_writable, array( $wp_filesystem, 'is_writable' ) );
+//
+//		if ( $files_writable !== $check_is_writable ) {
+//			$files_not_writable = array_diff_key( $check_is_writable, $files_writable );
+//
+//			foreach ( $files_not_writable as $relative_file_not_writable => $file_not_writable ) {
+//				// If the writable check failed, chmod file to 0644 and try again, same as copy_dir().
+//				$wp_filesystem->chmod( $file_not_writable, FS_CHMOD_FILE );
+//
+//				if ( $wp_filesystem->is_writable( $file_not_writable ) ) {
+//					unset( $files_not_writable[ $relative_file_not_writable ] );
+//				}
+//			}
+//
+//			// Store package-relative paths (the key) of non-writable files in the WP_Error object.
+//			$error_data = version_compare( $old_wp_version, '3.7-beta2', '>' ) ? array_keys( $files_not_writable ) : '';
+//
+//			if ( $files_not_writable ) {
+//				return new WP_Error(
+//					'files_not_writable',
+//					__( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
+//					implode( ', ', $error_data )
+//				);
+//			}
+//		}
+//	}
+    if ( $check_is_writable && 'direct' === $wp_filesystem->method ) {
+        // Check which files are writable
+        $files_writable = array_filter( $check_is_writable, array( $wp_filesystem, 'is_writable' ) );
+        error_log( "DEBUG: Writable files: " . implode( ', ', array_keys( $files_writable ) ) );
 
-		if ( $files_writable !== $check_is_writable ) {
-			$files_not_writable = array_diff_key( $check_is_writable, $files_writable );
+        if ( $files_writable !== $check_is_writable ) {
+            $files_not_writable = array_diff_key( $check_is_writable, $files_writable );
+            error_log( "DEBUG: Initial non-writable files: " . implode( ', ', array_keys( $files_not_writable ) ) );
 
-			foreach ( $files_not_writable as $relative_file_not_writable => $file_not_writable ) {
-				// If the writable check failed, chmod file to 0644 and try again, same as copy_dir().
-				$wp_filesystem->chmod( $file_not_writable, FS_CHMOD_FILE );
+            foreach ( $files_not_writable as $relative_file_not_writable => $file_not_writable ) {
+                // Try to chmod file to FS_CHMOD_FILE
+                $chmod_result = $wp_filesystem->chmod( $file_not_writable, FS_CHMOD_FILE );
+                error_log( "DEBUG: chmod attempt for $file_not_writable, result: " . ( $chmod_result ? 'success' : 'failure' ) );
 
-				if ( $wp_filesystem->is_writable( $file_not_writable ) ) {
-					unset( $files_not_writable[ $relative_file_not_writable ] );
-				}
-			}
+                if ( $wp_filesystem->is_writable( $file_not_writable ) ) {
+                    unset( $files_not_writable[ $relative_file_not_writable ] );
+                    error_log( "DEBUG: $file_not_writable is now writable after chmod" );
+                } else {
+                    error_log( "DEBUG: $file_not_writable is still not writable" );
+                }
+            }
 
-			// Store package-relative paths (the key) of non-writable files in the WP_Error object.
-			$error_data = version_compare( $old_wp_version, '3.7-beta2', '>' ) ? array_keys( $files_not_writable ) : '';
+            // Prepare error data for WP_Error
+            $error_data = version_compare( $old_wp_version, '3.7-beta2', '>' ) ? array_keys( $files_not_writable ) : '';
+            if ( $files_not_writable ) {
+                error_log( "ERROR: Update blocked, files not writable: " . implode( ', ', $error_data ) );
 
-			if ( $files_not_writable ) {
-				return new WP_Error(
-					'files_not_writable',
-					__( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
-					implode( ', ', $error_data )
-				);
-			}
-		}
-	}
+                return new WP_Error(
+                        'files_not_writable',
+                        __( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
+                        implode( ', ', $error_data )
+                );
+            } else {
+                error_log( "DEBUG: All previously non-writable files are now writable" );
+            }
+        } else {
+            error_log( "DEBUG: All files are writable" );
+        }
+    }
 
 	/** This filter is documented in wp-admin/includes/update-core.php */
 	apply_filters( 'update_feedback', __( 'Enabling Maintenance mode&#8230;' ) );
@@ -1238,27 +1277,66 @@ function update_core( $from, $to ) {
 		);
 	}
 
-	// Since we know the core files have copied over, we can now copy the version file.
-	if ( ! is_wp_error( $result ) ) {
-		if ( ! $wp_filesystem->copy( $from . $distro . 'wp-includes/version.php', $to . 'wp-includes/version.php', true /* overwrite */ ) ) {
-			$wp_filesystem->delete( $from, true );
-			$result = new WP_Error(
-				'copy_failed_for_version_file',
-				__( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
-				'wp-includes/version.php'
-			);
-		}
+//	// Since we know the core files have copied over, we can now copy the version file.
+//	if ( ! is_wp_error( $result ) ) {
+//		if ( ! $wp_filesystem->copy( $from . $distro . 'wp-includes/version.php', $to . 'wp-includes/version.php', true /* overwrite */ ) ) {
+//			$wp_filesystem->delete( $from, true );
+//			$result = new WP_Error(
+//				'copy_failed_for_version_file',
+//				__( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
+//				'wp-includes/version.php'
+//			);
+//		}
+//
+//		$wp_filesystem->chmod( $to . 'wp-includes/version.php', FS_CHMOD_FILE );
+//
+//		/*
+//		 * `wp_opcache_invalidate()` only exists in WordPress 5.5 or later,
+//		 * so don't run it when upgrading from older versions.
+//		 */
+//		if ( function_exists( 'wp_opcache_invalidate' ) ) {
+//			wp_opcache_invalidate( $to . 'wp-includes/version.php' );
+//		}
+//	}
+    if ( ! is_wp_error( $result ) ) {
 
-		$wp_filesystem->chmod( $to . 'wp-includes/version.php', FS_CHMOD_FILE );
+        $source_file = $from . $distro . 'wp-includes/version.php';
+        $dest_file   = $to . 'wp-includes/version.php';
 
-		/*
-		 * `wp_opcache_invalidate()` only exists in WordPress 5.5 or later,
-		 * so don't run it when upgrading from older versions.
-		 */
-		if ( function_exists( 'wp_opcache_invalidate' ) ) {
-			wp_opcache_invalidate( $to . 'wp-includes/version.php' );
-		}
-	}
+        error_log( "DEBUG: Attempting to copy $source_file to $dest_file" );
+
+        if ( ! $wp_filesystem->copy( $source_file, $dest_file, true /* overwrite */ ) ) {
+            // Delete the temporary folder as in original code
+            $wp_filesystem->delete( $from, true );
+
+            // Capture PHP-level error (permissions, file not found, etc.)
+            $last_error = error_get_last();
+            $error_message = isset( $last_error['message'] ) ? $last_error['message'] : 'Unknown error';
+
+            // Log detailed error
+            error_log( "ERROR: Failed to copy version.php. Source: $source_file, Destination: $dest_file. PHP error: $error_message" );
+
+            // Return WP_Error with more context
+            $result = new WP_Error(
+                    'copy_failed_for_version_file',
+                    __( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
+                    $error_message
+            );
+
+        } else {
+            error_log( "DEBUG: version.php copied successfully from $source_file to $dest_file" );
+        }
+
+        // Attempt to set proper permissions
+        $chmod_result = $wp_filesystem->chmod( $dest_file, FS_CHMOD_FILE );
+        error_log( "DEBUG: chmod result for $dest_file: " . ( $chmod_result ? 'success' : 'failure' ) );
+
+        // Opcache invalidation for PHP >= 5.5
+        if ( function_exists( 'wp_opcache_invalidate' ) ) {
+            wp_opcache_invalidate( $dest_file );
+            error_log( "DEBUG: Opcache invalidated for $dest_file" );
+        }
+    }
 
 	// Check to make sure everything copied correctly, ignoring the contents of wp-content.
 	$skip   = array( 'wp-content' );

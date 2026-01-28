@@ -22,16 +22,16 @@ define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', getenv('DB_NAME'));
+define( 'DB_NAME', 'db');
 
 /** Database username */
-define( 'DB_USER', getenv('DB_USER'));
+define( 'DB_USER', getenv('username'));
 
 /** Database password */
-define( 'DB_PASSWORD', getenv('DB_PASSWORD'));
+define( 'DB_PASSWORD', getenv('password'));
 
 /** Database hostname */
-define( 'DB_HOST', 'localhost' );
+define( 'DB_HOST', 'db' );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8' );
@@ -40,6 +40,10 @@ define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
 define('FS_METHOD', 'direct');
+
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );      // Logs to wp-content/debug.log
+define( 'WP_DEBUG_DISPLAY', false );
 
 /**#@+
  * Authentication unique keys and salts.

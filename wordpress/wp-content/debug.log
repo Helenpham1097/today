@@ -1,0 +1,1 @@
+[28-Jan-2026 01:47:07 UTC] PHP Warning:  mysqli_real_connect(): (HY000/1045): Access denied for user ''@'172.18.0.4' (using password: NO) in /home/interceptor/application/wordpress/wp-includes/class-wpdb.php on line 1982
