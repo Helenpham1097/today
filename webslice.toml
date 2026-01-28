@@ -1,4 +1,4 @@
 [deploy]
-[deploy.commands]
+[deploy.commands.testwrongformat]
 build="scripts/build.sh"
 release="scripts/release.sh"
