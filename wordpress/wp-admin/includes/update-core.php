@@ -1024,7 +1024,7 @@ function update_core( $from, $to ) {
 
 		return new WP_Error(
 			'copy_failed_for_version_file',
-			__( 'The update cannot be installed because some files could not be copied. This is usually due to inconsistent file permissions.' ),
+			__( 'The update cannot be installed because some files could not be copied. This is usually due to inconsistent file permissions with Helen test.' ),
 			'wp-includes/version.php'
 		);
 	}
@@ -1319,7 +1319,7 @@ function update_core( $from, $to ) {
             // Return WP_Error with more context
             $result = new WP_Error(
                     'copy_failed_for_version_file',
-                    __( 'The update cannot be installed because your site is unable to copy some files. This is usually due to inconsistent file permissions.' ),
+                    __( 'The update cannot be installed because your site is unable to copy some filessssssssss. This is usually due to inconsistent file permissions.' ),
                     $error_message
             );
 
