@@ -17,4 +17,4 @@ echo "Build completed successfully!"
 
 echo "Running npm install..."
 
-npm install
+#npm install

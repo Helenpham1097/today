@@ -1,0 +1,4 @@
+[deploy]
+publish = "wordpress"
+[deploy.commands]
+build="script/build.sh"
