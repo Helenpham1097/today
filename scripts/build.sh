@@ -15,3 +15,6 @@ echo "Cleaning up..."
 
 echo "Build completed successfully!"
 
+echo "Running npm install..."
+
+npm install
