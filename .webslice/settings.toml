@@ -2,3 +2,5 @@
 publish = "wordpress"
 [deploy.commands]
 build="scripts/build.sh"
+build="scripts/release.sh"
+
