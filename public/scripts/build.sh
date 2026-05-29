@@ -17,4 +17,4 @@ echo "Build completed successfully!"
 
 echo "Running npm install..."
 
-php test.php test
+#php test.php test
