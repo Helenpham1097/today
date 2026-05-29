@@ -17,6 +17,6 @@ echo "Build completed successfully!"
 
 echo "Running npm install..."
 
-chmod 644 test/trang.txt
-chmod 550 test
+chmod 644 live/test/trang.txt
+chmod 550 live/test
 
